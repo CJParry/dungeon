@@ -34,10 +34,10 @@ public class Game {
    Game game = new Game();
     Hero.setGame(game);
     CommandSets.setGame(game);
-   game.startgame(game);
+   game.startGame(game);
   }
 
-  private void startgame(final Game game){
+  private void startGame(final Game game){
     final StopWatch stopWatch = new StopWatch();
     DungeonLogger.info("Started initializing Dungeon " + Version.getCurrentVersion() + ".");
     invokeOnEventDispatchThreadAndWait(new Runnable() {
