@@ -26,19 +26,22 @@ public class Game {
 
   private GameWindow gameWindow;
   private GameState gameState;
-
+  private CommandSets commandSets;
   /**
    * The main method.
    */
   public static void main(String[] args) {
-   Game game = new Game();
+    Game game = new Game();
     Hero.setGame(game);
-    CommandSets.setGame(game);
+    Loader.setGame(game);
+    Writer.setGame(game);
+    Engine.setGame(game);
     game.startGame(game);
   }
 
   private void startGame(final Game game){
     final StopWatch stopWatch = new StopWatch();
+    commandSets = new CommandSets(game);
     DungeonLogger.info("Started initializing Dungeon " + Version.getCurrentVersion() + ".");
     invokeOnEventDispatchThreadAndWait(new Runnable() {
       @Override
@@ -172,12 +175,12 @@ public class Game {
    * @return a boolean indicating whether or not the command executed successfully
    */
   private boolean processInput(IssuedCommand issuedCommand) {
-    IssuedCommandEvaluation evaluation = IssuedCommandProcessor.evaluateIssuedCommand(issuedCommand);
+    IssuedCommandEvaluation evaluation = IssuedCommandProcessor.evaluateIssuedCommand(issuedCommand, commandSets);
     if (evaluation.isValid()) {
       instanceInformation.incrementAcceptedCommandCount();
       getGameState().getCommandHistory().addCommand(issuedCommand);
       getGameState().getStatistics().addCommand(issuedCommand);
-      IssuedCommandProcessor.prepareIssuedCommand(issuedCommand).execute();
+      IssuedCommandProcessor.prepareIssuedCommand(issuedCommand, commandSets).execute();
       return true;
     } else {
       DungeonString string = new DungeonString();

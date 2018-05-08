@@ -16,10 +16,12 @@ public final class Engine {
 
   private static final int BATTLE_TURN_DURATION = 30;
   //remove
-  private static GameState gameState;
+  //private static GameState game.getGameState();
+  private static Game game;
+
   //remove
-  public static void setGameState(GameState g){
-    gameState = g;
+  public static void setGame(Game g){
+    game = g;
   }
   //instan
           
@@ -58,7 +60,7 @@ public final class Engine {
       throw new IllegalArgumentException("seconds should be nonnegative.");
     }
     if (seconds > 0) {
-      gameState.getWorld().rollDate(seconds);
+      game.getGameState().getWorld().rollDate(seconds);
     }
     silentRefresh();
     notifyGameStateModification();
@@ -68,7 +70,7 @@ public final class Engine {
    * Sets the status of the GameState to unsaved.
    */
   private static void notifyGameStateModification() {
-    gameState.setSaved(false);
+    game.getGameState().setSaved(false);
   }
 
   /**
@@ -91,22 +93,22 @@ public final class Engine {
    * Refreshes all relevant Spawners in the world, currently, that is the spawners of the location the Hero is at.
    */
   private static void refreshSpawners() {
-    gameState.getHero().getLocation().refreshSpawners(gameState);
+    game.getGameState().getHero().getLocation().refreshSpawners(game.getGameState());
   }
 
   /**
    * Refreshes all the items in the location the Hero is at.
    */
   private static void refreshItems() {
-    gameState.getHero().getLocation().refreshItems(gameState);
+    game.getGameState().getHero().getLocation().refreshItems(game.getGameState());
   }
 
   /**
    * Iterates over all achievements, trying to unlock yet to be unlocked achievements.
    */
   private static void refreshAchievements() {
-    Date worldDate = gameState.getWorld().getWorldDate();
-    gameState.getHero().getAchievementTracker().update(AchievementStoreFactory.getDefaultStore(), worldDate);
+    Date worldDate = game.getGameState().getWorld().getWorldDate();
+    game.getGameState().getHero().getAchievementTracker().update(AchievementStoreFactory.getDefaultStore(), worldDate);
   }
 
   /**
@@ -121,12 +123,12 @@ public final class Engine {
       return;
     }
     while (hero.getHealth().isAlive() && foe.getHealth().isAlive()) {
-      hero.hit(foe, gameState);
+      hero.hit(foe, game.getGameState());
       Engine.rollDateAndRefresh(BATTLE_TURN_DURATION);
       // No contract specifies that calling hit on the Hero will not kill it, so check both creatures again.
       // Additionally, rolling the date forward may kill the hero in the future.
       if (hero.getHealth().isAlive() && foe.getHealth().isAlive()) {
-        foe.hit(hero, gameState);
+        foe.hit(hero, game.getGameState());
         Engine.rollDateAndRefresh(BATTLE_TURN_DURATION);
       }
     }
@@ -143,13 +145,13 @@ public final class Engine {
     Writer.write(dungeonString);
     writeDrops(defeated);
     if (hero == survivor) {
-      PartOfDay partOfDay = PartOfDay.getCorrespondingConstant(gameState.getWorld().getWorldDate());
-      gameState.getStatistics().getBattleStatistics().addBattle(foe, defeated.getCauseOfDeath(), partOfDay);
-      gameState.getStatistics().getExplorationStatistics().addKill(hero.getLocation().getPoint());
+      PartOfDay partOfDay = PartOfDay.getCorrespondingConstant(game.getGameState().getWorld().getWorldDate());
+      game.getGameState().getStatistics().getBattleStatistics().addBattle(foe, defeated.getCauseOfDeath(), partOfDay);
+      game.getGameState().getStatistics().getExplorationStatistics().addKill(hero.getLocation().getPoint());
       long heroTakenDamage = hero.getBattleLog().getAndResetTaken();
       long heroInflictedDamage = hero.getBattleLog().getAndResetInflicted();
-      gameState.getStatistics().getHeroStatistics().incrementDamageTaken(heroTakenDamage);
-      gameState.getStatistics().getHeroStatistics().incrementDamageInflicted(heroInflictedDamage);
+      game.getGameState().getStatistics().getHeroStatistics().incrementDamageTaken(heroTakenDamage);
+      game.getGameState().getStatistics().getHeroStatistics().incrementDamageInflicted(heroInflictedDamage);
     }
   }
 

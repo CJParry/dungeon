@@ -53,19 +53,18 @@ import java.util.Map;
 
 public final class CommandSets {
 
-  private static final Map<String, CommandSet> commandSetMap = initializeCommandSetMap();
+  private final Map<String, CommandSet> commandSetMap;// = initializeCommandSetMap();
 
-  private static Game game;
-  
-  public static void setGame(Game g){
-    game = g;
-  }
-  private CommandSets() {
-    throw new AssertionError();
+  private Game game;
+
+  public CommandSets(Game game) {
+    this.game = game;
+    commandSetMap = initializeCommandSetMap();
+    //throw new AssertionError();
   }
 
   @NotNull
-  private static Map<String, CommandSet> initializeCommandSetMap() {
+  private Map<String, CommandSet> initializeCommandSetMap() {
     Map<String, CommandSet> map = new HashMap<>();
     map.put("default", initializeDefaultCommandSet());
     map.put("extra", initializeExtraCommandSet());
@@ -73,7 +72,7 @@ public final class CommandSets {
     return map;
   }
 
-  private static CommandSet initializeDefaultCommandSet() {
+  private CommandSet initializeDefaultCommandSet() {
     CommandSet commandSet = CommandSet.emptyCommandSet();
     // Respect the alphabetical ordering of the Command names.
     commandSet.addCommand(new Command("achievements", "Displays the already unlocked achievements.") {
@@ -276,7 +275,7 @@ public final class CommandSets {
     return commandSet;
   }
 
-  private static CommandSet initializeExtraCommandSet() {
+  private CommandSet initializeExtraCommandSet() {
     CommandSet commandSet = CommandSet.emptyCommandSet();
     commandSet.addCommand(new Command("text", "Throws an enormous amount of colored text on the screen.") {
       @Override
@@ -323,7 +322,7 @@ public final class CommandSets {
     return commandSet;
   }
 
-  private static CommandSet initializeDebugCommandSet() {
+  private CommandSet initializeDebugCommandSet() {
     CommandSet commandSet = CommandSet.emptyCommandSet();
     commandSet.addCommand(new Command("achievements", "Writes the achievements you have not yet unlocked.") {
       @Override
@@ -510,11 +509,11 @@ public final class CommandSets {
     return commandSet;
   }
 
-  static boolean hasCommandSet(String identifier) {
+   boolean hasCommandSet(String identifier) {
     return commandSetMap.containsKey(identifier);
   }
 
-  static CommandSet getCommandSet(String identifier) {
+   CommandSet getCommandSet(String identifier) {
     return commandSetMap.get(identifier);
   }
 
