@@ -34,7 +34,7 @@ public class Game {
    Game game = new Game();
     Hero.setGame(game);
     CommandSets.setGame(game);
-   game.startGame(game);
+    game.startGame(game);
   }
 
   private void startGame(final Game game){
