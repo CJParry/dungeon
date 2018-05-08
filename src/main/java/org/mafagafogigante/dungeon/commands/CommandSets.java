@@ -42,6 +42,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.Color;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -51,7 +52,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public final class CommandSets {
+public final class CommandSets implements Serializable {
 
   private final Map<String, CommandSet> commandSetMap;// = initializeCommandSetMap();
 

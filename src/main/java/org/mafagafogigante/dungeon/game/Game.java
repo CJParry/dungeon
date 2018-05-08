@@ -13,6 +13,7 @@ import org.mafagafogigante.dungeon.util.Utils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.awt.Color;
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +21,7 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
-public class Game {
+public class Game implements Serializable {
 
   private final InstanceInformation instanceInformation = new InstanceInformation();
   private GameWindow gameWindow;

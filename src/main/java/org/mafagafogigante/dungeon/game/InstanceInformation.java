@@ -2,10 +2,12 @@ package org.mafagafogigante.dungeon.game;
 
 import org.mafagafogigante.dungeon.util.Utils;
 
+import java.io.Serializable;
+
 /**
  * Information about an instance of the game.
  */
-class InstanceInformation {
+class InstanceInformation implements Serializable {
 
   private final long startingTimeMillis;
   private int acceptedCommandCount;
