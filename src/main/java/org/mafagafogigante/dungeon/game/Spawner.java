@@ -32,11 +32,11 @@ class Spawner implements Serializable {
    *
    * <p>Only spawners in locations whose creatures are visible to the player should be refreshed.
    */
-  public void refresh() {
+  public void refresh(GameState gameState) {
     long worldTime = getWorldTime();
     while (worldTime - lastChange >= spawnDelay && location.getCreatureCount(id) < populationLimit) {
       World world = location.getWorld();
-      Creature creature = world.getCreatureFactory().makeCreature(id, world);
+      Creature creature = world.getCreatureFactory().makeCreature(id, world, gameState);
       if (creature != null) {
         location.addCreature(creature);
       } else {

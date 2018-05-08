@@ -34,6 +34,12 @@ import javax.swing.JOptionPane;
  */
 public final class Loader {
 
+  private static Game game;
+
+  public static void setGame(Game g){
+    game = g;
+  }
+
   private static final File SAVES_FOLDER = new File("saves/");
   private static final String SAVE_EXTENSION = ".dungeon";
   private static final String VERSION_EXTENSION = ".version";
@@ -66,8 +72,8 @@ public final class Loader {
    * Prompts the user to confirm an operation using a dialog window.
    */
   private static boolean confirmOperation(String confirmation) {
-    int result = JOptionPane.showConfirmDialog(Game.getGameWindow(), confirmation, null, JOptionPane.YES_NO_OPTION);
-    Game.getGameWindow().requestFocusOnTextField();
+    int result = JOptionPane.showConfirmDialog(game.getGameWindow(), confirmation, null, JOptionPane.YES_NO_OPTION);
+    game.getGameWindow().requestFocusOnTextField();
     return result == JOptionPane.YES_OPTION;
   }
 
@@ -91,7 +97,7 @@ public final class Loader {
     string.append(gameState.getPreface());
     string.append("\n");
     Writer.write(string);
-    Game.getGameWindow().requestFocusOnTextField();
+    game.getGameWindow().requestFocusOnTextField();
     return gameState;
   }
 

@@ -16,6 +16,12 @@ public final class Writer {
    */
   private static final int DEFAULT_WAIT_INTERVAL = 300;
 
+  private static Game game= new Game();//to pass tests
+  //refactor to un static
+  public static void setGame(Game g){
+    game = g;
+  }
+
   private Writer() { // Ensure that this class cannot be instantiated.
     throw new AssertionError();
   }
@@ -47,8 +53,8 @@ public final class Writer {
    * @param specifications a WritingSpecifications object
    */
   public static void write(Writable writable, WritingSpecifications specifications) {
-    if (Game.getGameWindow() != null) { // There will be no window when running the tests, so check to prevent a NPE.
-      Game.getGameWindow().scheduleWriteToTextPane(writable, specifications);
+    if (game.getGameWindow() != null) { // There will be no window when running the tests, so check to prevent a NPE.
+      game.getGameWindow().scheduleWriteToTextPane(writable, specifications);
       if (specifications.shouldWait()) {
         Sleeper.sleep(specifications.getWait());
       }

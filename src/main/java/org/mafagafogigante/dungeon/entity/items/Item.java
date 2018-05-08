@@ -8,10 +8,7 @@ import org.mafagafogigante.dungeon.entity.LightSource;
 import org.mafagafogigante.dungeon.entity.Luminosity;
 import org.mafagafogigante.dungeon.entity.TagSet;
 import org.mafagafogigante.dungeon.entity.Weight;
-import org.mafagafogigante.dungeon.game.Game;
-import org.mafagafogigante.dungeon.game.Id;
-import org.mafagafogigante.dungeon.game.Name;
-import org.mafagafogigante.dungeon.game.QualifiedName;
+import org.mafagafogigante.dungeon.game.*;
 import org.mafagafogigante.dungeon.io.Version;
 import org.mafagafogigante.dungeon.util.Percentage;
 
@@ -86,15 +83,19 @@ public final class Item extends Entity {
     }
   }
 
-  /**
+/*
+  */
+/**
    * Returns how many seconds have passed since this Item was created.
    *
    * @return a long representing an amount of seconds
    */
-  long getAge() {
-    Duration existence = new Duration(dateOfCreation, Game.getGameState().getWorld().getWorldDate());
+
+  long getAge(GameState gameState) {
+    Duration existence = new Duration(dateOfCreation, gameState.getWorld().getWorldDate());
     return existence.getSeconds();
   }
+
 
   @Override
   public Name getName() {
@@ -161,16 +162,16 @@ public final class Item extends Entity {
     return integrity.isBroken();
   }
 
-  public void decrementIntegrityByHit() {
-    integrity.decrementBy(weaponComponent.getIntegrityDecrementOnHit());
+  public void decrementIntegrityByHit(GameState gameState) {
+    integrity.decrementBy(weaponComponent.getIntegrityDecrementOnHit(), gameState);
   }
 
-  public void decrementIntegrityByEat() {
-    integrity.decrementBy(foodComponent.getIntegrityDecrementOnEat());
+  public void decrementIntegrityByEat(GameState gameState) {
+    integrity.decrementBy(foodComponent.getIntegrityDecrementOnEat(), gameState);
   }
 
-  public void decrementIntegrityByDrinking() {
-    integrity.decrementBy(drinkableComponent.getIntegrityDecrementPerDose());
+  public void decrementIntegrityByDrinking(GameState gameState) {
+    integrity.decrementBy(drinkableComponent.getIntegrityDecrementPerDose(), gameState);
   }
 
   /**

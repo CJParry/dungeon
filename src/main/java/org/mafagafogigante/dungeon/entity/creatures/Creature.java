@@ -7,6 +7,7 @@ import org.mafagafogigante.dungeon.entity.Luminosity;
 import org.mafagafogigante.dungeon.entity.TagSet;
 import org.mafagafogigante.dungeon.entity.items.CreatureInventory;
 import org.mafagafogigante.dungeon.entity.items.Item;
+import org.mafagafogigante.dungeon.game.GameState;
 import org.mafagafogigante.dungeon.game.Location;
 import org.mafagafogigante.dungeon.io.Version;
 import org.mafagafogigante.dungeon.logging.DungeonLogger;
@@ -204,8 +205,8 @@ public class Creature extends Entity {
    *
    * @param target the target
    */
-  public void hit(Creature target) {
-    AttackAlgorithms.renderAttack(this, target);
+  public void hit(Creature target, GameState gameState) {
+    AttackAlgorithms.renderAttack(this, target, gameState);
   }
 
   boolean hasWeapon() {

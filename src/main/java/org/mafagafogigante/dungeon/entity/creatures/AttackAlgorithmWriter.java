@@ -3,6 +3,7 @@ package org.mafagafogigante.dungeon.entity.creatures;
 import org.mafagafogigante.dungeon.entity.items.Item;
 import org.mafagafogigante.dungeon.game.DungeonString;
 import org.mafagafogigante.dungeon.game.Game;
+import org.mafagafogigante.dungeon.game.GameState;
 import org.mafagafogigante.dungeon.io.Writer;
 
 import java.awt.Color;
@@ -25,9 +26,9 @@ final class AttackAlgorithmWriter {
    * @param defender the target of the attack
    * @param criticalHit a boolean indicating if the attack was a critical hit or not
    */
-  static void writeInflictedDamage(Creature attacker, int hitDamage, Creature defender, boolean criticalHit) {
+  static void writeInflictedDamage(Creature attacker, int hitDamage, Creature defender, boolean criticalHit, GameState gameState) {
     DungeonString string = new DungeonString();
-    string.setColor(attacker.getId().equals(Game.getGameState().getHero().getId()) ? Color.GREEN : Color.RED);
+    string.setColor(attacker.getId().equals(gameState.getHero().getId()) ? Color.GREEN : Color.RED);
     string.append(attacker.getName().getSingular());
     string.append(" inflicted ");
     string.append(String.valueOf(hitDamage));

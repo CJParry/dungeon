@@ -28,7 +28,7 @@ public final class ItemPreset implements Preset, Serializable {
   private String type;
   private Name name;
   private Rarity rarity;
-  private TagSet<Tag> tagSet = TagSet.makeEmptyTagSet(Item.Tag.class);
+  private TagSet<Tag> tagSet = TagSet.makeEmptyTagSet(Tag.class);
   private EnchantmentRules enchantmentRules = new EnchantmentRules();
   private Integrity integrity;
   private int damage;
@@ -86,7 +86,7 @@ public final class ItemPreset implements Preset, Serializable {
     this.rarity = rarity;
   }
 
-  public TagSet<Item.Tag> getTagSet() {
+  public TagSet<Tag> getTagSet() {
     return tagSet;
   }
 

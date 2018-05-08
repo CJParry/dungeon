@@ -15,7 +15,14 @@ import java.awt.Color;
 public final class Engine {
 
   private static final int BATTLE_TURN_DURATION = 30;
-
+  //remove
+  private static GameState gameState;
+  //remove
+  public static void setGameState(GameState g){
+    gameState = g;
+  }
+  //instan
+          
   private Engine() { // Ensure that this class cannot be instantiated.
     throw new AssertionError();
   }
@@ -51,7 +58,7 @@ public final class Engine {
       throw new IllegalArgumentException("seconds should be nonnegative.");
     }
     if (seconds > 0) {
-      Game.getGameState().getWorld().rollDate(seconds);
+      gameState.getWorld().rollDate(seconds);
     }
     silentRefresh();
     notifyGameStateModification();
@@ -61,7 +68,7 @@ public final class Engine {
    * Sets the status of the GameState to unsaved.
    */
   private static void notifyGameStateModification() {
-    Game.getGameState().setSaved(false);
+    gameState.setSaved(false);
   }
 
   /**
@@ -84,22 +91,22 @@ public final class Engine {
    * Refreshes all relevant Spawners in the world, currently, that is the spawners of the location the Hero is at.
    */
   private static void refreshSpawners() {
-    Game.getGameState().getHero().getLocation().refreshSpawners();
+    gameState.getHero().getLocation().refreshSpawners(gameState);
   }
 
   /**
    * Refreshes all the items in the location the Hero is at.
    */
   private static void refreshItems() {
-    Game.getGameState().getHero().getLocation().refreshItems();
+    gameState.getHero().getLocation().refreshItems(gameState);
   }
 
   /**
    * Iterates over all achievements, trying to unlock yet to be unlocked achievements.
    */
   private static void refreshAchievements() {
-    Date worldDate = Game.getGameState().getWorld().getWorldDate();
-    Game.getGameState().getHero().getAchievementTracker().update(AchievementStoreFactory.getDefaultStore(), worldDate);
+    Date worldDate = gameState.getWorld().getWorldDate();
+    gameState.getHero().getAchievementTracker().update(AchievementStoreFactory.getDefaultStore(), worldDate);
   }
 
   /**
@@ -114,12 +121,12 @@ public final class Engine {
       return;
     }
     while (hero.getHealth().isAlive() && foe.getHealth().isAlive()) {
-      hero.hit(foe);
+      hero.hit(foe, gameState);
       Engine.rollDateAndRefresh(BATTLE_TURN_DURATION);
       // No contract specifies that calling hit on the Hero will not kill it, so check both creatures again.
       // Additionally, rolling the date forward may kill the hero in the future.
       if (hero.getHealth().isAlive() && foe.getHealth().isAlive()) {
-        foe.hit(hero);
+        foe.hit(hero, gameState);
         Engine.rollDateAndRefresh(BATTLE_TURN_DURATION);
       }
     }
@@ -136,13 +143,13 @@ public final class Engine {
     Writer.write(dungeonString);
     writeDrops(defeated);
     if (hero == survivor) {
-      PartOfDay partOfDay = PartOfDay.getCorrespondingConstant(Game.getGameState().getWorld().getWorldDate());
-      Game.getGameState().getStatistics().getBattleStatistics().addBattle(foe, defeated.getCauseOfDeath(), partOfDay);
-      Game.getGameState().getStatistics().getExplorationStatistics().addKill(hero.getLocation().getPoint());
+      PartOfDay partOfDay = PartOfDay.getCorrespondingConstant(gameState.getWorld().getWorldDate());
+      gameState.getStatistics().getBattleStatistics().addBattle(foe, defeated.getCauseOfDeath(), partOfDay);
+      gameState.getStatistics().getExplorationStatistics().addKill(hero.getLocation().getPoint());
       long heroTakenDamage = hero.getBattleLog().getAndResetTaken();
       long heroInflictedDamage = hero.getBattleLog().getAndResetInflicted();
-      Game.getGameState().getStatistics().getHeroStatistics().incrementDamageTaken(heroTakenDamage);
-      Game.getGameState().getStatistics().getHeroStatistics().incrementDamageInflicted(heroInflictedDamage);
+      gameState.getStatistics().getHeroStatistics().incrementDamageTaken(heroTakenDamage);
+      gameState.getStatistics().getHeroStatistics().incrementDamageInflicted(heroInflictedDamage);
     }
   }
 

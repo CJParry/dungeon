@@ -2,6 +2,7 @@ package org.mafagafogigante.dungeon.entity.items;
 
 import org.mafagafogigante.dungeon.date.Date;
 import org.mafagafogigante.dungeon.game.Game;
+import org.mafagafogigante.dungeon.game.GameState;
 import org.mafagafogigante.dungeon.game.Random;
 import org.mafagafogigante.dungeon.io.Version;
 
@@ -32,7 +33,7 @@ public class ClockComponent implements Serializable {
   /**
    * Returns a string that represents a clock reading.
    */
-  public String getTimeString() {
+  public String getTimeString(GameState gameState) {
     if (master.isBroken()) {
       if (lastTime == null) {
         if (Random.nextBoolean()) {
@@ -44,7 +45,7 @@ public class ClockComponent implements Serializable {
         return "The clock is broken. Still, it displays " + lastTime.toTimeString() + ".";
       }
     } else {
-      String timeString = Game.getGameState().getWorld().getWorldDate().toTimeString();
+      String timeString = gameState.getWorld().getWorldDate().toTimeString();
       return "The clock displays " + timeString + ".";
     }
   }

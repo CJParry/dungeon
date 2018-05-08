@@ -84,9 +84,9 @@ public class Location implements Serializable {
   /**
    * Refreshes all the Spawners of this location.
    */
-  void refreshSpawners() {
+  void refreshSpawners(GameState gameState) {
     for (Spawner spawner : spawners) {
-      spawner.refresh();
+      spawner.refresh(gameState);
     }
   }
 
@@ -201,10 +201,10 @@ public class Location implements Serializable {
    * Refreshes all the items in this location's inventory and all the items in the inventories of the creatures in this
    * location.
    */
-  void refreshItems() {
-    getInventory().refreshItems();
+  void refreshItems(GameState gameState) {
+    getInventory().refreshItems(gameState);
     for (Creature creature : creatures) {
-      creature.getInventory().refreshItems();
+      creature.getInventory().refreshItems(gameState);
     }
   }
 

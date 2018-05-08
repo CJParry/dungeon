@@ -67,8 +67,8 @@ public class GameWindow extends JFrame {
   /**
    * Constructs a new GameWindow.
    */
-  public GameWindow() {
-    initComponents();
+  public GameWindow(Game game) {
+    initComponents(game);
     document = new SwappingStyledDocument(textPane);
     setVisible(true);
   }
@@ -111,7 +111,7 @@ public class GameWindow extends JFrame {
     return this;
   }
 
-  private void initComponents() {
+  private void initComponents(final Game game) {
     JPanel panel = new JPanel(new GridBagLayout());
     panel.setBackground(SharedConstants.MARGIN_COLOR);
 
@@ -137,14 +137,14 @@ public class GameWindow extends JFrame {
 
     textField.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent actionEvent) {
-        textFieldActionPerformed();
+        textFieldActionPerformed(game);
       }
     });
 
     textField.addKeyListener(new KeyAdapter() {
       @Override
       public void keyPressed(KeyEvent event) {
-        textFieldKeyPressed(event);
+        textFieldKeyPressed(event, game.getGameState());
       }
     });
 
@@ -160,7 +160,7 @@ public class GameWindow extends JFrame {
     setGameWindowTitle(WINDOW_TITLE);
 
     setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-    addWindowListener(new ClosingListener());
+    addWindowListener(new ClosingListener(game));
 
     textField.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK), "SAVE");
     textField.getActionMap().put("SAVE", new AbstractAction() {
@@ -168,7 +168,7 @@ public class GameWindow extends JFrame {
       public void actionPerformed(ActionEvent event) {
         if (acceptingNextCommand) {
           clearTextPane();
-          Loader.saveGame(Game.getGameState());
+          Loader.saveGame(game.getGameState());
         }
       }
     });
@@ -280,7 +280,7 @@ public class GameWindow extends JFrame {
   /**
    * The method that gets called when the player presses ENTER.
    */
-  private void textFieldActionPerformed() {
+  private void textFieldActionPerformed(final Game game) {
     if (acceptingNextCommand) {
       final String text = getTrimmedTextFieldText();
       if (!text.isEmpty()) {
@@ -294,7 +294,7 @@ public class GameWindow extends JFrame {
             if (IssuedCommand.isValidSource(text)) {
               DungeonLogger.logCommandRenderingReport(text, "started doInBackGround", stopWatch);
               try {
-                Game.renderTurn(new IssuedCommand(text), stopWatch);
+                game.renderTurn(new IssuedCommand(text), stopWatch);
               } catch (Throwable throwable) {
                 logExecutionExceptionAndExit(throwable);
               }
@@ -317,10 +317,9 @@ public class GameWindow extends JFrame {
    *
    * @param event the KeyEvent.
    */
-  private void textFieldKeyPressed(KeyEvent event) {
+  private void textFieldKeyPressed(KeyEvent event, GameState gameState) {
     int keyCode = event.getKeyCode();
     if (isUpDownOrTab(keyCode)) { // Check if the event is of interest.
-      GameState gameState = Game.getGameState();
       if (gameState != null) {
         CommandHistory commandHistory = gameState.getCommandHistory();
         if (keyCode == KeyEvent.VK_UP) {
@@ -427,11 +426,17 @@ public class GameWindow extends JFrame {
     acceptingNextCommand = true;
   }
 
-  private static class ClosingListener extends WindowAdapter {
+  private class ClosingListener extends WindowAdapter {
+
+private Game game;
+    public ClosingListener(Game game) {
+    this.game = game;
+    }
+
     @Override
     public void windowClosing(WindowEvent event) {
       super.windowClosing(event);
-      Game.exit();
+      game.exit();
     }
   }
 

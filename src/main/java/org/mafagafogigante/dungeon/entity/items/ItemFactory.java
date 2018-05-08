@@ -4,6 +4,7 @@ import org.mafagafogigante.dungeon.date.Date;
 import org.mafagafogigante.dungeon.entity.EnchantmentFactory;
 import org.mafagafogigante.dungeon.entity.creatures.CorpseItemPresetFactory;
 import org.mafagafogigante.dungeon.entity.creatures.Creature;
+import org.mafagafogigante.dungeon.game.GameState;
 import org.mafagafogigante.dungeon.game.Id;
 import org.mafagafogigante.dungeon.io.DungeonResource;
 import org.mafagafogigante.dungeon.io.ResourceNameResolver;
@@ -38,7 +39,7 @@ public final class ItemFactory implements Serializable {
   /**
    * Constructs an ItemFactory from one or more ItemPresetFactories.
    */
-  public ItemFactory(EnchantmentFactory enchantmentFactory, @NotNull ItemPresetFactory... itemPresetFactories) {
+  public ItemFactory(GameState gameState, EnchantmentFactory enchantmentFactory, @NotNull ItemPresetFactory... itemPresetFactories) {
     this.enchantmentFactory = enchantmentFactory;
     for (ItemPresetFactory itemPresetFactory : itemPresetFactories) {
       addAllPresets(itemPresetFactory.getItemPresets());

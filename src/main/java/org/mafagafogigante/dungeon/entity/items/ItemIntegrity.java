@@ -1,6 +1,7 @@
 package org.mafagafogigante.dungeon.entity.items;
 
 import org.mafagafogigante.dungeon.entity.Integrity;
+import org.mafagafogigante.dungeon.game.GameState;
 import org.mafagafogigante.dungeon.io.Version;
 import org.mafagafogigante.dungeon.util.Percentage;
 
@@ -69,10 +70,10 @@ public class ItemIntegrity implements Serializable {
    *
    * @param amount a nonnegative integer
    */
-  public void decrementBy(int amount) { // Must exist. After delegating the decrement, this method checks for breakage.
+  public void decrementBy(int amount, GameState gameState) { // Must exist. After delegating the decrement, this method checks for breakage.
     integrity.decrementBy(amount);
     if (isBroken()) {
-      BreakageHandler.handleBreakage(item);
+      BreakageHandler.handleBreakage(item, gameState);
     }
   }
 

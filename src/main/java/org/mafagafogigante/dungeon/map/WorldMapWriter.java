@@ -1,6 +1,7 @@
 package org.mafagafogigante.dungeon.map;
 
 import org.mafagafogigante.dungeon.game.DungeonString;
+import org.mafagafogigante.dungeon.game.GameState;
 import org.mafagafogigante.dungeon.gui.GameWindow;
 import org.mafagafogigante.dungeon.io.Writer;
 
@@ -12,12 +13,12 @@ public final class WorldMapWriter {
     throw new AssertionError();
   }
 
-  public static void writeMap() {
-    renderMap(WorldMap.makeWorldMap(getMapRows(), getMapColumns(), true));
+  public static void writeMap(GameState gameState) {
+    renderMap(WorldMap.makeWorldMap(getMapRows(), getMapColumns(), true, gameState));
   }
 
-  public static void writeDebugMap() {
-    renderMap(WorldMap.makeWorldMap(getMapRows(), getMapColumns(), false));
+  public static void writeDebugMap(GameState gameState) {
+    renderMap(WorldMap.makeWorldMap(getMapRows(), getMapColumns(), false, gameState));
   }
 
   private static int getMapRows() {

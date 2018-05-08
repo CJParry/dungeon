@@ -1,8 +1,7 @@
 package org.mafagafogigante.dungeon.game;
 
-import org.mafagafogigante.dungeon.commands.IssuedCommand;
-import org.mafagafogigante.dungeon.commands.IssuedCommandEvaluation;
-import org.mafagafogigante.dungeon.commands.IssuedCommandProcessor;
+import org.mafagafogigante.dungeon.commands.*;
+import org.mafagafogigante.dungeon.entity.creatures.Hero;
 import org.mafagafogigante.dungeon.gui.GameWindow;
 import org.mafagafogigante.dungeon.io.Loader;
 import org.mafagafogigante.dungeon.io.Version;
@@ -25,19 +24,26 @@ public class Game {
 
   private static final InstanceInformation instanceInformation = new InstanceInformation();
 
-  private static GameWindow gameWindow;
-  private static GameState gameState;
+  private GameWindow gameWindow;
+  private GameState gameState;
 
   /**
    * The main method.
    */
   public static void main(String[] args) {
+   Game game = new Game();
+    Hero.setGame(game);
+    CommandSets.setGame(game);
+   game.startgame(game);
+  }
+
+  private void startgame(final Game game){
     final StopWatch stopWatch = new StopWatch();
     DungeonLogger.info("Started initializing Dungeon " + Version.getCurrentVersion() + ".");
     invokeOnEventDispatchThreadAndWait(new Runnable() {
       @Override
       public void run() {
-        gameWindow = new GameWindow();
+        gameWindow = new GameWindow(game);
       }
     });
     DungeonLogger.info("Finished making the window. Took " + stopWatch.toString() + ".");
@@ -55,7 +61,7 @@ public class Game {
    * Invokes a runnable on the EDT and waits for it to finish. If an exception is thrown, this method logs it and
    * finishes the application.
    */
-  private static void invokeOnEventDispatchThreadAndWait(Runnable runnable) {
+  private void invokeOnEventDispatchThreadAndWait(Runnable runnable) {
     try {
       SwingUtilities.invokeAndWait(runnable);
     } catch (InterruptedException | InvocationTargetException fatal) {
@@ -68,7 +74,7 @@ public class Game {
    *
    * <p>If a new GameState is created and the saves folder is empty, the tutorial is suggested.
    */
-  private static GameState getInitialGameState() {
+  private GameState getInitialGameState() {
     GameState gameState = Loader.loadGame(true);
     if (gameState == null) {
       gameState = Loader.newGame();
@@ -81,14 +87,14 @@ public class Game {
     return gameState;
   }
 
-  private static void suggestTutorial() {
+  private void suggestTutorial() {
     Writer.write(new DungeonString("\nYou may want to issue 'tutorial' to learn the basics.\n"));
   }
 
   /**
    * Gets a GameState object. Should be invoked to get a GameState after the Hero dies.
    */
-  private static GameState getAfterDeathGameState() {
+  private GameState getAfterDeathGameState() {
     GameState gameState = Loader.loadGame(false);
     if (gameState != null) {
       JOptionPane.showMessageDialog(getGameWindow(), "Loaded the most recent saved game.");
@@ -99,11 +105,11 @@ public class Game {
     return gameState;
   }
 
-  public static GameWindow getGameWindow() {
+  public GameWindow getGameWindow() {
     return gameWindow;
   }
 
-  public static GameState getGameState() {
+  public GameState getGameState() {
     return gameState;
   }
 
@@ -113,7 +119,7 @@ public class Game {
    *
    * @param state another GameState object, or null
    */
-  public static void setGameState(GameState state) {
+  public void setGameState(GameState state) {
     if (getGameState() != null) {
       DungeonLogger.warning("Called setGameState without unsetting the old game state.");
     }
@@ -128,7 +134,7 @@ public class Game {
     gameState.getHero().look();
   }
 
-  public static void unsetGameState() {
+  public void unsetGameState() {
     DungeonLogger.info("Set the GameState field in Game to null.");
     gameState = null;
   }
@@ -138,7 +144,7 @@ public class Game {
    *
    * @param issuedCommand the last IssuedCommand.
    */
-  public static void renderTurn(IssuedCommand issuedCommand, StopWatch stopWatch) {
+  public void renderTurn(IssuedCommand issuedCommand, StopWatch stopWatch) {
     DungeonLogger.logCommandRenderingReport(issuedCommand.toString(), "started renderTurn", stopWatch);
     // Clears the text pane.
     getGameWindow().clearTextPane();
@@ -165,7 +171,7 @@ public class Game {
    * @param issuedCommand the last IssuedCommand.
    * @return a boolean indicating whether or not the command executed successfully
    */
-  private static boolean processInput(IssuedCommand issuedCommand) {
+  private boolean processInput(IssuedCommand issuedCommand) {
     IssuedCommandEvaluation evaluation = IssuedCommandProcessor.evaluateIssuedCommand(issuedCommand);
     if (evaluation.isValid()) {
       instanceInformation.incrementAcceptedCommandCount();
@@ -194,7 +200,7 @@ public class Game {
   /**
    * Exits the game, prompting the user if the current state should be saved if it is not already saved.
    */
-  public static void exit() {
+  public void exit() {
     if (getGameState() != null && !getGameState().isSaved()) {
       Loader.saveGame(getGameState());
     }
@@ -202,7 +208,7 @@ public class Game {
     System.exit(0);
   }
 
-  private static void logInstanceClosing() {
+  private void logInstanceClosing() {
     StringBuilder builder = new StringBuilder();
     builder.append("Closing instance. Ran for ");
     builder.append(instanceInformation.getDurationString());

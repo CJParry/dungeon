@@ -1,6 +1,7 @@
 package org.mafagafogigante.dungeon.entity.creatures;
 
 import org.jetbrains.annotations.NotNull;
+import org.mafagafogigante.dungeon.game.GameState;
 
 /**
  * An interface that defines a single renderAttack method that is invoked when a creature attacks another.
@@ -15,6 +16,6 @@ interface AttackAlgorithm {
    * @param attacker the attacker
    * @param defender the defender
    */
-  void renderAttack(@NotNull Creature attacker, @NotNull Creature defender);
+  void renderAttack(@NotNull Creature attacker, @NotNull Creature defender, GameState gameState);
 
 }

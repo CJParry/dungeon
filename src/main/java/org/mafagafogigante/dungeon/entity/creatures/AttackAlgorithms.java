@@ -1,5 +1,7 @@
 package org.mafagafogigante.dungeon.entity.creatures;
 
+import org.mafagafogigante.dungeon.game.GameState;
+
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -22,11 +24,11 @@ final class AttackAlgorithms {
    * @param attacker the Creature that is attacking
    * @param defender the Creature that is being attacked
    */
-  public static void renderAttack(Creature attacker, Creature defender) {
+  public static void renderAttack(Creature attacker, Creature defender, GameState gameState) {
     if (uninitialized) {
       initialize();
     }
-    ATTACK_ALGORITHM_MAP.get(attacker.getAttackAlgorithmId()).renderAttack(attacker, defender);
+    ATTACK_ALGORITHM_MAP.get(attacker.getAttackAlgorithmId()).renderAttack(attacker, defender, gameState);
   }
 
   private static void initialize() {

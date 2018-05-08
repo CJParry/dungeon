@@ -2,12 +2,7 @@ package org.mafagafogigante.dungeon.entity.creatures;
 
 import org.mafagafogigante.dungeon.entity.Luminosity;
 import org.mafagafogigante.dungeon.entity.items.Item;
-import org.mafagafogigante.dungeon.game.Direction;
-import org.mafagafogigante.dungeon.game.DungeonString;
-import org.mafagafogigante.dungeon.game.Game;
-import org.mafagafogigante.dungeon.game.Location;
-import org.mafagafogigante.dungeon.game.Point;
-import org.mafagafogigante.dungeon.game.World;
+import org.mafagafogigante.dungeon.game.*;
 import org.mafagafogigante.dungeon.io.Version;
 import org.mafagafogigante.dungeon.io.Writer;
 import org.mafagafogigante.dungeon.stats.ExplorationStatistics;
@@ -93,7 +88,7 @@ public class Observer implements Serializable {
   /**
    * Prints the name of the player's current location and lists all creatures and items the character sees.
    */
-  public void look() {
+  public void look(GameState gameState) {
     DungeonString string = new DungeonString();
     Location location = creature.getLocation(); // Avoid multiple calls to the getter.
     string.append("You are at ");
@@ -119,7 +114,7 @@ public class Observer implements Serializable {
       }
     }
     string.append("\n");
-    lookLocations(string);
+    lookLocations(string, gameState);
     lookCreatures(string);
     lookItems(string);
     Writer.write(string);
@@ -129,14 +124,14 @@ public class Observer implements Serializable {
    * Looks to the Locations adjacent to the one the Hero is in, informing if the Hero cannot see the adjacent
    * Locations.
    */
-  private void lookLocations(DungeonString dungeonString) {
+  private void lookLocations(DungeonString dungeonString, GameState gameState) {
     dungeonString.append("\n");
     World world = creature.getLocation().getWorld();
     Point point = creature.getLocation().getPoint();
     lookUpwardsAndDownwards(dungeonString, world, point);
     if (areThereAdjacentLocations()) {
       if (canSeeAdjacentLocations()) {
-        lookToTheSides(dungeonString, world, point);
+        lookToTheSides(dungeonString, world, point, gameState);
       } else {
         dungeonString.append("You can't clearly see the adjacent locations.\n");
       }
@@ -173,7 +168,7 @@ public class Observer implements Serializable {
     return ADJACENT_LOCATIONS_VISIBILITY.isMetBy(this);
   }
 
-  private void lookToTheSides(DungeonString dungeonString, World world, Point point) {
+  private void lookToTheSides(DungeonString dungeonString, World world, Point point, GameState gameState) {
     Map<ColoredString, ArrayList<Direction>> visibleLocations = new HashMap<>();
     // Don't print the Location you just left.
     Collection<Direction> directions = getHorizontalDirections();
@@ -181,7 +176,7 @@ public class Observer implements Serializable {
       Point adjacentPoint = new Point(point, dir);
       if (world.hasLocationAt(adjacentPoint)) {
         Location adjacentLocation = world.getLocation(adjacentPoint);
-        ExplorationStatistics explorationStatistics = Game.getGameState().getStatistics().getExplorationStatistics();
+        ExplorationStatistics explorationStatistics = gameState.getStatistics().getExplorationStatistics();
         explorationStatistics.createEntryIfNotExists(adjacentPoint, adjacentLocation.getId());
         String name = adjacentLocation.getName().getSingular();
         Color color = adjacentLocation.getDescription().getColor();

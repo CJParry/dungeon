@@ -52,7 +52,7 @@ public class World implements Serializable {
    *
    * @param statistics a WorldStatistics object on which this World will record its status
    */
-  public World(WorldStatistics statistics) {
+  public World(WorldStatistics statistics, GameState gameState) {
     worldStatistics = statistics;
 
     String creaturesFilename = ResourceNameResolver.resolveName(DungeonResource.CREATURES);
@@ -64,7 +64,7 @@ public class World implements Serializable {
     ItemPresetFactory jsonItemPresetFactory = new JsonItemPresetFactory(itemsFilename);
     ItemPresetFactory corpseItemPresetFactory = new CorpseItemPresetFactory(creatureFactory);
     EnchantmentFactory enchantmentFactory = new EnchantmentFactory(enchantmentsFilename);
-    itemFactory = new ItemFactory(enchantmentFactory, jsonItemPresetFactory, corpseItemPresetFactory);
+    itemFactory = new ItemFactory(gameState, enchantmentFactory, jsonItemPresetFactory, corpseItemPresetFactory);
   }
 
   /**

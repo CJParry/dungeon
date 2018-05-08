@@ -5,6 +5,7 @@ import org.mafagafogigante.dungeon.entity.items.CreatureInventory.SimulationResu
 import org.mafagafogigante.dungeon.entity.items.Item;
 import org.mafagafogigante.dungeon.entity.items.ItemFactory;
 import org.mafagafogigante.dungeon.game.Game;
+import org.mafagafogigante.dungeon.game.GameState;
 import org.mafagafogigante.dungeon.game.Id;
 import org.mafagafogigante.dungeon.game.World;
 import org.mafagafogigante.dungeon.io.Version;
@@ -95,11 +96,11 @@ public final class CreatureFactory implements Serializable {
    *
    * <p>Also adds the new creature to the statistics.
    */
-  public Creature makeCreature(Id id, World world) {
+  public Creature makeCreature(Id id, World world, GameState gameState) {
     CreaturePreset preset = creaturePresets.get(id);
     if (preset != null) {
       Creature creature = new Creature(preset);
-      Game.getGameState().getStatistics().getWorldStatistics().addSpawn(creature.getName().getSingular());
+      gameState.getStatistics().getWorldStatistics().addSpawn(creature.getName().getSingular());
       giveItems(creature, world);
       return creature;
     } else {

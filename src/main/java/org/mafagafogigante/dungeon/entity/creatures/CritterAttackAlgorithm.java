@@ -1,6 +1,7 @@
 package org.mafagafogigante.dungeon.entity.creatures;
 
 import org.mafagafogigante.dungeon.game.DungeonString;
+import org.mafagafogigante.dungeon.game.GameState;
 import org.mafagafogigante.dungeon.game.Random;
 import org.mafagafogigante.dungeon.io.Writer;
 
@@ -14,7 +15,7 @@ import java.awt.Color;
 public class CritterAttackAlgorithm implements AttackAlgorithm {
 
   @Override
-  public void renderAttack(@NotNull Creature attacker, @NotNull Creature defender) {
+  public void renderAttack(@NotNull Creature attacker, @NotNull Creature defender, GameState gameState) {
     if (Random.nextBoolean()) {
       Writer.writeAndWait(new DungeonString(attacker.getName() + " does nothing.\n", Color.YELLOW));
     } else {

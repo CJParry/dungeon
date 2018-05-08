@@ -26,11 +26,11 @@ class Walker implements Serializable {
   /**
    * Parses an issued command to move the player.
    */
-  public void parseHeroWalk(String[] arguments) {
+  public void parseHeroWalk(String[] arguments, GameState gameState) {
     if (arguments.length != 0) {
       for (Direction dir : Direction.values()) {
         if (dir.equalsIgnoreCase(arguments[0])) {
-          heroWalk(dir);
+          heroWalk(dir, gameState);
           return;
         }
       }
@@ -46,8 +46,7 @@ class Walker implements Serializable {
    * <p>If the hero moves, this method refreshes both locations at the latest date. If the hero does not move, this
    * method refreshes the location where the hero is.
    */
-  private void heroWalk(Direction dir) {
-    GameState gameState = Game.getGameState();
+  private void heroWalk(Direction dir, GameState gameState) {
     World world = gameState.getWorld();
     Point point = gameState.getHero().getLocation().getPoint();
     Point destinationPoint = new Point(point, dir);
@@ -64,13 +63,13 @@ class Walker implements Serializable {
       gameState.setHeroPosition(destinationPoint);
       Engine.refresh(); // Hero arrived in a new location, refresh the game.
       hero.look();
-      updateExplorationStatistics(destinationPoint);
+      updateExplorationStatistics(destinationPoint, gameState);
     }
   }
 
-  private void updateExplorationStatistics(Point destination) {
-    ExplorationStatistics explorationStatistics = Game.getGameState().getStatistics().getExplorationStatistics();
-    explorationStatistics.addVisit(destination, Game.getGameState().getWorld().getLocation(destination).getId());
+  private void updateExplorationStatistics(Point destination, GameState gameState) {
+    ExplorationStatistics explorationStatistics = gameState.getStatistics().getExplorationStatistics();
+    explorationStatistics.addVisit(destination, gameState.getWorld().getLocation(destination).getId());
   }
 
 }

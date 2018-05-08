@@ -20,7 +20,7 @@ import java.util.List;
 public final class CreaturePreset implements Preset, Serializable {
 
   private static final long serialVersionUID = Version.MAJOR;
-  private TagSet<Tag> tagSet = TagSet.makeEmptyTagSet(Creature.Tag.class);
+  private TagSet<Tag> tagSet = TagSet.makeEmptyTagSet(Tag.class);
   private Id id;
   private String type;
   private Name name;
@@ -55,15 +55,15 @@ public final class CreaturePreset implements Preset, Serializable {
     }
   }
 
-  TagSet<Creature.Tag> getTagSet() {
+  TagSet<Tag> getTagSet() {
     return tagSet;
   }
 
-  void setTagSet(TagSet<Creature.Tag> tagSet) {
+  void setTagSet(TagSet<Tag> tagSet) {
     this.tagSet = tagSet;
   }
 
-  public boolean hasTag(Creature.Tag tag) {
+  public boolean hasTag(Tag tag) {
     return tagSet.hasTag(tag);
   }
 

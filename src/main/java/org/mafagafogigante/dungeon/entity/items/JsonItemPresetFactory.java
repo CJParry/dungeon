@@ -43,7 +43,7 @@ public class JsonItemPresetFactory implements ItemPresetFactory {
       preset.setType(itemObject.get("type").asString());
       preset.setName(NameFactory.fromJsonObject(itemObject.get("name").asObject()));
       preset.setRarity(Rarity.valueOf(itemObject.get("rarity").asString()));
-      preset.setTagSet(new TagSetParser<>(Item.Tag.class, itemObject.get("tags")).parse());
+      preset.setTagSet(new TagSetParser<>(Tag.class, itemObject.get("tags")).parse());
       if (itemObject.get("enchantments") != null) {
         for (JsonValue enchantment : itemObject.get("enchantments").asArray()) {
           Id enchantmentId = new Id(enchantment.asObject().get("id").asString());

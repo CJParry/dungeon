@@ -80,6 +80,11 @@ public class Hero extends Creature {
   private final AchievementTracker achievementTracker;
   private final Statistics statistics;
   private final Date dateOfBirth;
+  private static Game game;
+
+  public static void setGame(Game g){
+    game = g;
+  }
 
   Hero(CreaturePreset preset, Statistics statistics, Date dateOfBirth) {
     super(preset);
@@ -195,7 +200,7 @@ public class Hero extends Creature {
    * Prints the name of the player's current location and lists all creatures and items the character sees.
    */
   public void look() {
-    observer.look();
+    observer.look(game.getGameState());
   }
 
   /**
@@ -455,7 +460,7 @@ public class Hero extends Creature {
             // The absolute value of the healthChange will never be equal to nutrition, only smaller.
             healthChange = (int) (food.getNutrition() * remainingBites);
           }
-          selectedItem.decrementIntegrityByEat();
+          selectedItem.decrementIntegrityByEat(game.getGameState());
           if (selectedItem.isBroken() && !selectedItem.hasTag(Item.Tag.REPAIRABLE)) {
             Writer.write("You ate " + selectedItem.getName() + ".");
           } else {
@@ -521,7 +526,7 @@ public class Hero extends Creature {
             } else {
               Writer.write("You drank a dose of " + selectedItem.getName() + ".");
             }
-            selectedItem.decrementIntegrityByDrinking();
+            selectedItem.decrementIntegrityByDrinking(game.getGameState());
           } else {
             Writer.write("This item is depleted.");
           }
@@ -663,9 +668,9 @@ public class Hero extends Creature {
     } else {
       while (getLocation().getInventory().hasItem(target) && !target.isBroken()) {
         // Simulate item-on-item damage by decrementing an item's integrity by its own hit decrement.
-        target.decrementIntegrityByHit();
+        target.decrementIntegrityByHit(game.getGameState());
         if (hasWeapon() && !getWeapon().isBroken()) {
-          getWeapon().decrementIntegrityByHit();
+          getWeapon().decrementIntegrityByHit(game.getGameState());
         }
         Engine.rollDateAndRefresh(SECONDS_TO_HIT_AN_ITEM);
       }
@@ -768,7 +773,7 @@ public class Hero extends Creature {
   }
 
   private String getAgeString() {
-    return new Duration(dateOfBirth, Game.getGameState().getWorld().getWorldDate()).toString();
+    return new Duration(dateOfBirth, game.getGameState().getWorld().getWorldDate()).toString();
   }
 
   /**
@@ -777,7 +782,7 @@ public class Hero extends Creature {
   public void readTime() {
     Item clock = getBestClock();
     if (clock != null) {
-      Writer.write(clock.getClockComponent().getTimeString());
+      Writer.write(clock.getClockComponent().getTimeString(game.getGameState()));
       // Assume that the hero takes the same time to read the clock and to put it back where it was.
       Engine.rollDateAndRefresh(getTimeToReadFromClock(clock));
     }
@@ -800,7 +805,7 @@ public class Hero extends Creature {
    * @param arguments an array of string arguments
    */
   public void walk(String[] arguments) {
-    walker.parseHeroWalk(arguments);
+    walker.parseHeroWalk(arguments, game.getGameState());
   }
 
   /**

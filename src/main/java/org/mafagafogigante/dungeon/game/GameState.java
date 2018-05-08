@@ -27,7 +27,7 @@ public class GameState implements Serializable {
    */
   public GameState() {
     commandHistory = new CommandHistory();
-    world = new World(statistics.getWorldStatistics());
+    world = new World(statistics.getWorldStatistics(), this);
     createHeroAndStartingLocation();
   }
 

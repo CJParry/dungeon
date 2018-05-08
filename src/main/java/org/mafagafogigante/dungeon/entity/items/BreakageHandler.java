@@ -3,6 +3,7 @@ package org.mafagafogigante.dungeon.entity.items;
 import org.mafagafogigante.dungeon.game.Game;
 
 import org.jetbrains.annotations.NotNull;
+import org.mafagafogigante.dungeon.game.GameState;
 
 /**
  * Uninstantiable class that handles item breakage via a handleBreakage(Item) method.
@@ -17,7 +18,7 @@ final class BreakageHandler {
    *
    * @param item the Item object that just broke, not null, broken
    */
-  public static void handleBreakage(@NotNull Item item) {
+  public static void handleBreakage(@NotNull Item item, GameState gameState) {
     if (!item.isBroken()) {
       throw new IllegalArgumentException("item should be broken.");
     }
@@ -27,7 +28,7 @@ final class BreakageHandler {
     }
     if (item.hasTag(Item.Tag.CLOCK)) {
       // A clock just broke! Update its last time record.
-      item.getClockComponent().setLastTime(Game.getGameState().getWorld().getWorldDate());
+      item.getClockComponent().setLastTime(gameState.getWorld().getWorldDate());
     }
   }
 
