@@ -60,7 +60,6 @@ public final class CommandSets {
   public CommandSets(Game game) {
     this.game = game;
     commandSetMap = initializeCommandSetMap();
-    //throw new AssertionError();
   }
 
   @NotNull
@@ -374,7 +373,7 @@ public final class CommandSets {
       @Override
       public void execute(@NotNull String[] arguments) {
         CounterMap<CauseOfDeath> map =
-            game.getGameState().getStatistics().getBattleStatistics().getKillsByCauseOfDeath();
+                game.getGameState().getStatistics().getBattleStatistics().getKillsByCauseOfDeath();
         if (map.isNotEmpty()) {
           Table table = new Table("Type", "Count");
           table.setColumnAlignments(Arrays.asList(ColumnAlignment.LEFT, ColumnAlignment.RIGHT));
@@ -509,11 +508,11 @@ public final class CommandSets {
     return commandSet;
   }
 
-   boolean hasCommandSet(String identifier) {
+  boolean hasCommandSet(String identifier) {
     return commandSetMap.containsKey(identifier);
   }
 
-   CommandSet getCommandSet(String identifier) {
+  CommandSet getCommandSet(String identifier) {
     return commandSetMap.get(identifier);
   }
 

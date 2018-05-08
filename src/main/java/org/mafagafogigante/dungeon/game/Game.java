@@ -22,11 +22,11 @@ import javax.swing.SwingUtilities;
 
 public class Game {
 
-  private static final InstanceInformation instanceInformation = new InstanceInformation();
-
+  private final InstanceInformation instanceInformation = new InstanceInformation();
   private GameWindow gameWindow;
   private GameState gameState;
   private CommandSets commandSets;
+
   /**
    * The main method.
    */
