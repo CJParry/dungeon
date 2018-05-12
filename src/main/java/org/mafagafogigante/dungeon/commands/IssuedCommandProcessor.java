@@ -9,15 +9,11 @@ import java.util.Collections;
  */
 public class IssuedCommandProcessor {
 
-  private IssuedCommandProcessor() {
-    throw new AssertionError();
-  }
-
   /**
    * Evaluates an IssuedCommand. This method will check if the IssuedCommand is valid or not and provide suggestions if
    * it is not.
    */
-  public static IssuedCommandEvaluation evaluateIssuedCommand(@NotNull IssuedCommand issuedCommand, CommandSets commandSets) {
+  public IssuedCommandEvaluation evaluateIssuedCommand(@NotNull IssuedCommand issuedCommand, CommandSets commandSets) {
     CommandSet collection;
     String commandToken;
     if (issuedCommand.getTokens().size() > 1 && commandSets.hasCommandSet(issuedCommand.getTokens().get(0))) {
@@ -39,7 +35,7 @@ public class IssuedCommandProcessor {
    * Prepares an IssuedCommand. As a precondition, evaluateIssueCommand should have considered this IssuedCommand
    * valid.
    */
-  public static PreparedIssuedCommand prepareIssuedCommand(@NotNull IssuedCommand issuedCommand, CommandSets commandSets) {
+  public PreparedIssuedCommand prepareIssuedCommand(@NotNull IssuedCommand issuedCommand, CommandSets commandSets) {
     CommandSet collection;
     String commandToken;
     int indexOfFirstArgument;
@@ -57,7 +53,7 @@ public class IssuedCommandProcessor {
     return new PreparedIssuedCommand(selectedCommand, arguments);
   }
 
-  private static String[] makeArgumentArray(IssuedCommand issuedCommand, int indexOfFirstArgument) {
+  private String[] makeArgumentArray(IssuedCommand issuedCommand, int indexOfFirstArgument) {
     String[] tokenArray = issuedCommand.getTokens().toArray(new String[issuedCommand.getTokens().size()]);
     int argumentCount = issuedCommand.getTokens().size() - indexOfFirstArgument;
     String[] arguments = new String[issuedCommand.getTokens().size() - indexOfFirstArgument];

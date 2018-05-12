@@ -34,11 +34,15 @@ import javax.swing.JOptionPane;
  */
 public final class Loader {
 
-  private static Game game;
+  private static Game game = new Game();
 
   public static void setGame(Game g){
     game = g;
   }
+  public static Game getGame(){
+    return game;
+  }
+
 
   private static final File SAVES_FOLDER = new File("saves/");
   private static final String SAVE_EXTENSION = ".dungeon";

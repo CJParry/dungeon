@@ -15,9 +15,12 @@ public final class Writer {
    * For how many milliseconds the game sleeps after writing a string of battle output.
    */
   private static final int DEFAULT_WAIT_INTERVAL = 300;
-
   private static Game game= new Game();//to pass tests
-  //refactor to un static
+
+  public static Game getGame() {
+    return game;
+  }
+
   public static void setGame(Game g){
     game = g;
   }

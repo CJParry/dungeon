@@ -15,7 +15,7 @@ public class WeaponEnchantmentPreset implements Serializable {
     this.damageAmount = new DamageAmount(type, amount);
   }
 
-  Enchantment makeEnchantment() {
+  WeaponEnchantment makeEnchantment() {
     return new WeaponEnchantment(name, damageAmount);
   }
 

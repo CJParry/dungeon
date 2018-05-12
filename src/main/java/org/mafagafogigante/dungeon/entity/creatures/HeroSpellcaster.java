@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * The Spellcaster implementation the Hero uses.
  */
-public class HeroSpellcaster implements Serializable, Spellcaster {
+public class HeroSpellcaster implements Serializable {
 
   private static final long serialVersionUID = Version.MAJOR;
   private final Hero hero;
@@ -25,17 +25,17 @@ public class HeroSpellcaster implements Serializable, Spellcaster {
     this.hero = hero;
   }
 
-  @Override
+
   public List<Spell> getSpellList() {
     return spellList;
   }
 
-  @Override
+
   public boolean knowsSpell(Spell spell) {
     return spellList.contains(spell);
   }
 
-  @Override
+
   public void learnSpell(Spell spell) {
     if (knowsSpell(spell)) {
       DungeonLogger.warning("called learnSpell with " + spell.getName() + " which is already known.");
@@ -45,7 +45,7 @@ public class HeroSpellcaster implements Serializable, Spellcaster {
     }
   }
 
-  @Override
+
   public void parseCast(String[] arguments) {
     if (arguments.length > 0) {
       Split split = Split.splitOnOn(Arrays.asList(arguments));

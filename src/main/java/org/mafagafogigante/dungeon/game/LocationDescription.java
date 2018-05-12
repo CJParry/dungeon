@@ -10,7 +10,7 @@ import java.io.Serializable;
 /**
  * The description of a Location object.
  */
-public class LocationDescription implements Examinable, Serializable {
+public class LocationDescription implements Serializable {
 
   private static final long serialVersionUID = Version.MAJOR;
   private final char symbol;
@@ -31,7 +31,7 @@ public class LocationDescription implements Examinable, Serializable {
   }
 
   @NotNull
-  @Override
+
   public String getInfo() {
     return info;
   }

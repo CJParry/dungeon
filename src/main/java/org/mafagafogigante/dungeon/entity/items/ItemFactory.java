@@ -30,7 +30,7 @@ public final class ItemFactory implements Serializable {
   private static final long serialVersionUID = Version.MAJOR;
   private final Map<Id, ItemPreset> itemPresets = new HashMap<>();
   private final EnchantmentFactory enchantmentFactory;
-  private ItemFactoryRestrictions restrictions;
+  private UniquenessRestrictions restrictions;
 
   // The flag that indicates we have already refreshed this ItemFactory with the resource files.
   // An ItemFactory is refreshed after construction, but not after deserialization.

@@ -54,7 +54,7 @@ import java.util.Map;
 
 public final class CommandSets implements Serializable {
 
-  private final Map<String, CommandSet> commandSetMap;// = initializeCommandSetMap();
+  private final Map<String, CommandSet> commandSetMap;
 
   private Game game;
 
@@ -84,7 +84,7 @@ public final class CommandSets implements Serializable {
     commandSet.addCommand(new Command("age", "Displays the character's age.") {
       @Override
       public void execute(@NotNull String[] arguments) {
-        game.getGameState().getHero().printAge();
+        game.getGameState().getHero().printAge(game.getGameState());
       }
     });
     commandSet.addCommand(new Command("cast", "Casts a spell.") {
@@ -96,25 +96,25 @@ public final class CommandSets implements Serializable {
     commandSet.addCommand(new Command("destroy", "Destroys items on the ground.") {
       @Override
       public void execute(@NotNull String[] arguments) {
-        game.getGameState().getHero().destroyItems(arguments);
+        game.getGameState().getHero().destroyItems(arguments, game);
       }
     });
     commandSet.addCommand(new Command("drop", "Drops the specified items.") {
       @Override
       public void execute(@NotNull String[] arguments) {
-        game.getGameState().getHero().dropItems(arguments);
+        game.getGameState().getHero().dropItems(arguments, game.getEngine());
       }
     });
     commandSet.addCommand(new Command("drink", "Drinks an item.") {
       @Override
       public void execute(@NotNull String[] arguments) {
-        game.getGameState().getHero().drinkItem(arguments);
+        game.getGameState().getHero().drinkItem(arguments, game);
       }
     });
     commandSet.addCommand(new Command("eat", "Eats an item.") {
       @Override
       public void execute(@NotNull String[] arguments) {
-        game.getGameState().getHero().eatItem(arguments);
+        game.getGameState().getHero().eatItem(arguments, game);
       }
     });
     commandSet.addCommand(new Command("conditions", "Lists the currently active conditions.") {
@@ -126,7 +126,7 @@ public final class CommandSets implements Serializable {
     commandSet.addCommand(new Command("equip", "Equips the specified item.") {
       @Override
       public void execute(@NotNull String[] arguments) {
-        game.getGameState().getHero().parseEquip(arguments);
+        game.getGameState().getHero().parseEquip(arguments, game.getEngine());
       }
     });
     commandSet.addCommand(new Command("examine", "Examines an item.") {
@@ -144,13 +144,13 @@ public final class CommandSets implements Serializable {
     commandSet.addCommand(new Command("fish", "Attempts to fish.") {
       @Override
       public void execute(@NotNull String[] arguments) {
-        game.getGameState().getHero().fish();
+        game.getGameState().getHero().fish(game.getEngine());
       }
     });
     commandSet.addCommand(new Command("go", "Makes the character move in the specified direction.") {
       @Override
       public void execute(@NotNull String[] arguments) {
-        game.getGameState().getHero().walk(arguments);
+        game.getGameState().getHero().walk(arguments, game);
       }
     });
     commandSet.addCommand(new Command("items", "Lists the items in the character's inventory.") {
@@ -162,7 +162,7 @@ public final class CommandSets implements Serializable {
     commandSet.addCommand(new Command("kill", "Attacks the target chosen by the player.") {
       @Override
       public void execute(@NotNull String[] arguments) {
-        game.getGameState().getHero().attackTarget(arguments);
+        game.getGameState().getHero().attackTarget(arguments, game.getEngine());
       }
     });
     commandSet.addCommand(new Command("load", "Loads a saved game.") {
@@ -178,7 +178,7 @@ public final class CommandSets implements Serializable {
     commandSet.addCommand(new Command("look", "Describes what the character can see.") {
       @Override
       public void execute(@NotNull String[] arguments) {
-        game.getGameState().getHero().look();
+        game.getGameState().getHero().look(game.getGameState());
       }
     });
     commandSet.addCommand(new Command("map", "Shows a map of your surroundings.") {
@@ -190,7 +190,7 @@ public final class CommandSets implements Serializable {
     commandSet.addCommand(new Command("milk", "Attempts to milk a creature.") {
       @Override
       public void execute(@NotNull String[] arguments) {
-        game.getGameState().getHero().parseMilk(arguments);
+        game.getGameState().getHero().parseMilk(arguments, game.getEngine());
       }
     });
     commandSet.addCommand(new Command("new", "Starts a new game.") {
@@ -203,19 +203,19 @@ public final class CommandSets implements Serializable {
     commandSet.addCommand(new Command("pick", "Attempts to pick up items from the current location.") {
       @Override
       public void execute(@NotNull String[] arguments) {
-        game.getGameState().getHero().pickItems(arguments);
+        game.getGameState().getHero().pickItems(arguments, game.getEngine());
       }
     });
     commandSet.addCommand(new Command("read", "Reads the specified item.") {
       @Override
       public void execute(@NotNull String[] arguments) {
-        game.getGameState().getHero().readItem(arguments);
+        game.getGameState().getHero().readItem(arguments, game.getEngine());
       }
     });
     commandSet.addCommand(new Command("rest", "Rests until healing about three fifths of the character's health.") {
       @Override
       public void execute(@NotNull String[] arguments) {
-        game.getGameState().getHero().rest();
+        game.getGameState().getHero().rest(game.getEngine());
       }
     });
     commandSet.addCommand(new Command("save", "Saves the game.") {
@@ -233,7 +233,7 @@ public final class CommandSets implements Serializable {
     commandSet.addCommand(new Command("sleep", "Sleeps until the sun rises.") {
       @Override
       public void execute(@NotNull String[] arguments) {
-        game.getGameState().getHero().sleep();
+        game.getGameState().getHero().sleep(game.getEngine());
       }
     });
     commandSet.addCommand(new Command("spells", "Lists all the spells known by the character.") {
@@ -245,13 +245,13 @@ public final class CommandSets implements Serializable {
     commandSet.addCommand(new Command("status", "Displays the character's status.") {
       @Override
       public void execute(@NotNull String[] arguments) {
-        game.getGameState().getHero().printAllStatus();
+        game.getGameState().getHero().printAllStatus(game.getGameState());
       }
     });
     commandSet.addCommand(new Command("time", "Displays what the character knows about the current time.") {
       @Override
       public void execute(@NotNull String[] arguments) {
-        game.getGameState().getHero().readTime();
+        game.getGameState().getHero().readTime(game);
       }
     });
     commandSet.addCommand(new Command("tutorial", "Displays the tutorial.") {
@@ -263,7 +263,7 @@ public final class CommandSets implements Serializable {
     commandSet.addCommand(new Command("unequip", "Unequips the currently equipped item.") {
       @Override
       public void execute(@NotNull String[] arguments) {
-        game.getGameState().getHero().unequipWeapon();
+        game.getGameState().getHero().unequipWeapon(game.getEngine());
       }
     });
     commandSet.addCommand(new Command("wiki", "Searches the wiki for an article.") {
@@ -449,7 +449,7 @@ public final class CommandSets implements Serializable {
                 hero.getLocation().addItem(item);
                 Writer.write("Item could not be added to your inventory. Thus, it was added to the current location.");
               }
-              Engine.refresh(); // Set the game state to unsaved after adding an item to the world.
+              game.getEngine().refresh(); // Set the game state to unsaved after adding an item to the world.
             } else {
               Writer.write("Item could not be created due to a restriction.");
             }
@@ -482,7 +482,7 @@ public final class CommandSets implements Serializable {
             if (creature != null) {
               game.getGameState().getHero().getLocation().addCreature(creature);
               Writer.write("Spawned a " + creature.getName() + ".");
-              Engine.refresh(); // Set the game state to unsaved after adding a creature to the world.
+              game.getEngine().refresh(); // Set the game state to unsaved after adding a creature to the world.
             } else {
               Writer.write(givenId + " does not match any known creature.");
             }
@@ -501,7 +501,7 @@ public final class CommandSets implements Serializable {
     commandSet.addCommand(new Command("wait", "Makes time pass.") {
       @Override
       public void execute(@NotNull String[] arguments) {
-        new DebugWaitParser().parseDebugWait(arguments, game.getGameState());
+        new DebugWaitParser().parseDebugWait(arguments, game);
 
         // DebugWaitParser.parseDebugWait(arguments);
       }

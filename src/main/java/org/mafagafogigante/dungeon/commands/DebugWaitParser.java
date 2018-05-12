@@ -54,7 +54,7 @@ class DebugWaitParser {
     Writer.write(string);
   }
 
-  void parseDebugWait(@NotNull String[] arguments, GameState gameState) {
+  void parseDebugWait(@NotNull String[] arguments, Game game) {
     Syntax syntax = evaluateSyntax(arguments);
     if (syntax == Syntax.INVALID) {
       writeDebugWaitSyntax();
@@ -63,7 +63,7 @@ class DebugWaitParser {
         String timeString = StringUtils.join(arguments, " ", 1, arguments.length);
         try {
           Duration duration = DungeonTimeParser.parseDuration(timeString);
-          rollDate(duration.getSeconds());
+          rollDate(duration.getSeconds(), game.getEngine());
         } catch (IllegalArgumentException badArgument) {
           Writer.write("Provide small positive multipliers and units such as: '2 minutes and 10 seconds'");
         }
@@ -72,7 +72,7 @@ class DebugWaitParser {
         if (matches.size() == 0) {
           Writer.write("That did not match any part of the day.");
         } else if (matches.size() == 1) {
-          rollDate(PartOfDay.getSecondsToNext(gameState.getWorld().getWorldDate(), matches.getMatch(0)));
+          rollDate(PartOfDay.getSecondsToNext(game.getGameState().getWorld().getWorldDate(), matches.getMatch(0)), game.getEngine());
         } else {
           Messenger.printAmbiguousSelectionMessage();
         }
@@ -80,8 +80,8 @@ class DebugWaitParser {
     }
   }
 
-  private void rollDate(long seconds) {
-    Engine.rollDateAndRefresh(seconds);
+  private void rollDate(long seconds, Engine engine) {
+    engine.rollDateAndRefresh(seconds);
     Writer.write("Waited for " + seconds + " seconds.");
   }
 

@@ -4,7 +4,7 @@ import org.mafagafogigante.dungeon.io.Version;
 
 import java.io.Serializable;
 
-public class WeaponEnchantment implements Enchantment, Serializable {
+public class WeaponEnchantment implements Serializable {
 
   private static final long serialVersionUID = Version.MAJOR;
   private final String name;
@@ -15,17 +15,14 @@ public class WeaponEnchantment implements Enchantment, Serializable {
     this.amount = amount;
   }
 
-  @Override
   public String getName() {
     return name;
   }
 
-  @Override
   public String getDescription() {
     return "+" + amount.getDescription();
   }
 
-  @Override
   public void modifyAttackDamage(Damage damage) {
     damage.getAmounts().add(amount);
   }

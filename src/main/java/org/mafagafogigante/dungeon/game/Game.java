@@ -27,17 +27,23 @@ public class Game implements Serializable {
   private GameWindow gameWindow;
   private GameState gameState;
   private CommandSets commandSets;
+  private Engine engine;
 
   /**
    * The main method.
    */
   public static void main(String[] args) {
     Game game = new Game();
-    Hero.setGame(game);
-    Loader.setGame(game);
-    Writer.setGame(game);
-    Engine.setGame(game);
+    game.setReferences();
     game.startGame(game);
+  }
+
+  /**
+   * Sets a static reference to Game object in static classes Loader and Writer
+   */
+  private void setReferences(){
+    Loader.setGame(this);
+    Writer.setGame(this);
   }
 
   private void startGame(final Game game){
@@ -51,7 +57,9 @@ public class Game implements Serializable {
       }
     });
     DungeonLogger.info("Finished making the window. Took " + stopWatch.toString() + ".");
-    setGameState(getInitialGameState());
+    gameState = getInitialGameState();
+    engine = new Engine(gameState);
+    setGameState(gameState);
     invokeOnEventDispatchThreadAndWait(new Runnable() {
       @Override
       public void run() {
@@ -117,8 +125,10 @@ public class Game implements Serializable {
     return gameState;
   }
 
+  public Engine getEngine() { return engine; }
+
   /**
-   * Sets a new GameState to the static field. Can be used to nullify the GameState, something that should be done while
+   * Sets a new GameState to the gamestate field. Can be used to nullify the GameState, something that should be done while
    * another GameState is being created. If the provided GameState is not null, this setter also invokes Hero.look().
    *
    * @param state another GameState object, or null
@@ -133,9 +143,9 @@ public class Game implements Serializable {
     gameState = state;
     DungeonLogger.info("Set the GameState field in Game to a GameState.");
     // This is a new GameState that must be refreshed in order to have spawned creatures at the beginning.
-    Engine.refresh();
+    engine.refresh();
     Writer.write(new DungeonString("\n")); // Improves readability.
-    gameState.getHero().look();
+    gameState.getHero().look(gameState);
   }
 
   public void unsetGameState() {
@@ -162,7 +172,7 @@ public class Game implements Serializable {
         unsetGameState();
         setGameState(getAfterDeathGameState());
       } else {
-        Engine.endTurn();
+        engine.endTurn();
       }
     }
     DungeonLogger.logCommandRenderingReport(issuedCommand.toString(), "finished renderTurn", stopWatch);
@@ -175,13 +185,14 @@ public class Game implements Serializable {
    * @param issuedCommand the last IssuedCommand.
    * @return a boolean indicating whether or not the command executed successfully
    */
-  private boolean processInput(IssuedCommand issuedCommand) {
-    IssuedCommandEvaluation evaluation = IssuedCommandProcessor.evaluateIssuedCommand(issuedCommand, commandSets);
+  boolean processInput(IssuedCommand issuedCommand) {
+    IssuedCommandProcessor issuedCommandProcessor = new IssuedCommandProcessor();
+    IssuedCommandEvaluation evaluation = issuedCommandProcessor.evaluateIssuedCommand(issuedCommand, commandSets);
     if (evaluation.isValid()) {
       instanceInformation.incrementAcceptedCommandCount();
       getGameState().getCommandHistory().addCommand(issuedCommand);
       getGameState().getStatistics().addCommand(issuedCommand);
-      IssuedCommandProcessor.prepareIssuedCommand(issuedCommand, commandSets).execute();
+      issuedCommandProcessor.prepareIssuedCommand(issuedCommand, commandSets).execute();
       return true;
     } else {
       DungeonString string = new DungeonString();

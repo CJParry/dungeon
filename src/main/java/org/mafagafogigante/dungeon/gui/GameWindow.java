@@ -364,7 +364,7 @@ public class GameWindow extends JFrame {
    * @param specifications a WritingSpecifications object
    */
   public void scheduleWriteToTextPane(@NotNull final Writable writable,
-      @NotNull final WritingSpecifications specifications) {
+                                      @NotNull final WritingSpecifications specifications) {
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {
@@ -428,9 +428,9 @@ public class GameWindow extends JFrame {
 
   private class ClosingListener extends WindowAdapter {
 
-private Game game;
+    private Game game;
     public ClosingListener(Game game) {
-    this.game = game;
+      this.game = game;
     }
 
     @Override

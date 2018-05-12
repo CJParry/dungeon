@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
-class SimpleAstronomicalBody implements AstronomicalBody, Serializable {
+class SimpleAstronomicalBody implements Serializable {
 
   private static final long serialVersionUID = Version.MAJOR;
   private final String description;
@@ -19,7 +19,7 @@ class SimpleAstronomicalBody implements AstronomicalBody, Serializable {
     this.visibilityCriteria = new ArrayList<>(Arrays.asList(criteria));
   }
 
-  @Override
+
   public boolean isVisible(Observer observer) {
     for (VisibilityCriterion visibilityCriterion : visibilityCriteria) {
       if (!visibilityCriterion.isMetBy(observer)) {
@@ -29,7 +29,7 @@ class SimpleAstronomicalBody implements AstronomicalBody, Serializable {
     return true;
   }
 
-  @Override
+
   public String describeYourself() {
     return description;
   }

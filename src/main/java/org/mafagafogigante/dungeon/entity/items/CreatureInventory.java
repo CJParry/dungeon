@@ -8,7 +8,7 @@ import org.mafagafogigante.dungeon.logging.DungeonLogger;
 /**
  * The CreatureInventory class.
  */
-public class CreatureInventory extends BaseInventory implements LimitedInventory {
+public class CreatureInventory extends BaseInventory {
 
   private static final long serialVersionUID = Version.MAJOR;
   private final Creature owner;
@@ -24,12 +24,10 @@ public class CreatureInventory extends BaseInventory implements LimitedInventory
     this.weightLimit = Weight.newInstance(weightLimit);
   }
 
-  @Override
   public int getItemLimit() {
     return itemLimit;
   }
 
-  @Override
   public Weight getWeightLimit() {
     return weightLimit;
   }

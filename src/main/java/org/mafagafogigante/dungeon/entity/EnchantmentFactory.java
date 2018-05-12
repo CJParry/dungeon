@@ -34,7 +34,7 @@ public class EnchantmentFactory implements Serializable {
     }
   }
 
-  public Enchantment makeEnchantment(@NotNull Id id) {
+  public WeaponEnchantment makeEnchantment(@NotNull Id id) {
     return presets.get(id).makeEnchantment();
   }
 

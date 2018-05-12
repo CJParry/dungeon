@@ -4,14 +4,7 @@ import org.mafagafogigante.dungeon.entity.creatures.Creature;
 import org.mafagafogigante.dungeon.entity.creatures.Hero;
 import org.mafagafogigante.dungeon.entity.creatures.HeroUtils;
 import org.mafagafogigante.dungeon.entity.items.Item;
-import org.mafagafogigante.dungeon.game.BlockedEntrances;
-import org.mafagafogigante.dungeon.game.Direction;
-import org.mafagafogigante.dungeon.game.DungeonString;
-import org.mafagafogigante.dungeon.game.Engine;
-import org.mafagafogigante.dungeon.game.Id;
-import org.mafagafogigante.dungeon.game.Location;
-import org.mafagafogigante.dungeon.game.Point;
-import org.mafagafogigante.dungeon.game.Random;
+import org.mafagafogigante.dungeon.game.*;
 import org.mafagafogigante.dungeon.io.Writer;
 import org.mafagafogigante.dungeon.stats.CauseOfDeath;
 import org.mafagafogigante.dungeon.stats.TypeOfCauseOfDeath;
@@ -24,6 +17,7 @@ import java.util.Map;
 public final class SpellData {
 
   private static final Map<Id, Spell> spellMap = new HashMap<>();
+  private static Engine engine;
 
   static {
     putSpell(new Spell("HEAL", "Heal") {
@@ -33,13 +27,13 @@ public final class SpellData {
       @Override
       public void operate(Hero hero, String[] targetMatcher) {
         if (targetMatcher.length == 0) {
-          Engine.rollDateAndRefresh(SECONDS_TO_CAST_HEAL);
+          engine.rollDateAndRefresh(SECONDS_TO_CAST_HEAL);
           hero.getHealth().incrementBy(HEALING_VALUE);
           writeHealCastOnSelf(hero);
         } else {
           Creature target = hero.findCreature(targetMatcher);
           if (target != null) {
-            Engine.rollDateAndRefresh(SECONDS_TO_CAST_HEAL);
+            engine.rollDateAndRefresh(SECONDS_TO_CAST_HEAL);
             if (hero == target) { // The player used cast ... on <character name>.
               writeHealCastOnSelf(hero);
             } else {
@@ -89,7 +83,7 @@ public final class SpellData {
         if (!item.hasTag(Item.Tag.REPAIRABLE)) {
           Writer.write(item.getName().getSingular() + " is not repairable.");
         } else {
-          Engine.rollDateAndRefresh(SECONDS_TO_CAST_REPAIR); // Time passes before casting.
+          engine.rollDateAndRefresh(SECONDS_TO_CAST_REPAIR); // Time passes before casting.
           if (!hero.getInventory().hasItem(item)) { // If the item disappeared.
             Writer.write(item.getName().getSingular() + " disappeared before you finished casting.");
           } else {
@@ -112,7 +106,7 @@ public final class SpellData {
 
       @Override
       public void operate(Hero hero, String[] targetMatcher) {
-        Engine.rollDateAndRefresh(SECONDS_TO_CAST_PERCEIVE);
+        engine.rollDateAndRefresh(SECONDS_TO_CAST_PERCEIVE);
         List<Creature> creatureList = new ArrayList<>(hero.getLocation().getCreatures());
         creatureList.remove(hero);
         DungeonString string = new DungeonString();
@@ -132,7 +126,7 @@ public final class SpellData {
         } else {
           Creature target = hero.findCreature(targetMatcher);
           if (target != null) {
-            Engine.rollDateAndRefresh(SECONDS_TO_CAST_FINGER_OF_DEATH);
+            engine.rollDateAndRefresh(SECONDS_TO_CAST_FINGER_OF_DEATH);
             DungeonString string = new DungeonString();
             string.append("You casted ");
             string.append(getName().getSingular());
@@ -161,7 +155,7 @@ public final class SpellData {
         } else {
           Creature target = hero.findCreature(targetMatcher);
           if (target != null) {
-            Engine.rollDateAndRefresh(SECONDS_TO_CAST_VEIL_OF_DARKNESS);
+            engine.rollDateAndRefresh(SECONDS_TO_CAST_VEIL_OF_DARKNESS);
             target.getLightSource().disable();
             Writer.write("You casted " + getName() + " on " + target.getName().getSingular() + ".");
           }
@@ -179,7 +173,7 @@ public final class SpellData {
         } else {
           Creature target = hero.findCreature(targetMatcher);
           if (target != null) {
-            Engine.rollDateAndRefresh(SECONDS_TO_CAST_UNVEIL);
+            engine.rollDateAndRefresh(SECONDS_TO_CAST_UNVEIL);
             target.getLightSource().enable();
             Writer.write("You casted " + getName() + " on " + target.getName().getSingular() + ".");
           }
@@ -198,7 +192,7 @@ public final class SpellData {
         } else {
           Creature target = hero.findCreature(targetMatcher);
           if (target != null) {
-            Engine.rollDateAndRefresh(SECONDS_TO_CAST_DISPLACE);
+            engine.rollDateAndRefresh(SECONDS_TO_CAST_DISPLACE);
             if (Random.roll(DISPLACE_PROBABILITY)) {
               Location targetLocation = target.getLocation();
               BlockedEntrances blockedEntrances = targetLocation.getBlockedEntrances();
@@ -228,7 +222,8 @@ public final class SpellData {
     });
   }
 
-  private SpellData() {
+  public SpellData(Engine engine) {
+    this.engine = engine;
   }
 
   public static Map<Id, Spell> getSpellMap() {

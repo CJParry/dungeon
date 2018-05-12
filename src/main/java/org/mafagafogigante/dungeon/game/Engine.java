@@ -15,25 +15,20 @@ import java.awt.Color;
 public final class Engine {
 
   private static final int BATTLE_TURN_DURATION = 30;
-  //remove
-  //private static GameState game.getGameState();
-  private static Game game;
+  private  GameState gameState;
 
-  //remove
-  public static void setGame(Game g){
-    game = g;
-  }
-  //instan
-          
-  private Engine() { // Ensure that this class cannot be instantiated.
-    throw new AssertionError();
+  public GameState getGameState() {
+    return gameState;
   }
 
-  /**
+  public Engine(GameState gameState) { this.gameState = gameState;
+  }
+
+  /**`
    * Refreshes the game. This method should be called whenever the state of the game is changed and the engine should be
    * updated. If time passed, use {@link Engine#rollDateAndRefresh(long)}.
    */
-  public static void refresh() {
+  public void refresh() {
     effectivelyUpdate(0);
   }
 
@@ -43,7 +38,7 @@ public final class Engine {
    *
    * @param seconds how many seconds to roll the date forward, a positive integer
    */
-  public static void rollDateAndRefresh(long seconds) {
+  public void rollDateAndRefresh(long seconds) {
     if (seconds <= 0) {
       throw new IllegalArgumentException("seconds should be positive.");
     }
@@ -55,12 +50,12 @@ public final class Engine {
    *
    * @param seconds how many seconds to roll the date forward, nonnegative
    */
-  private static void effectivelyUpdate(long seconds) {
+  private void effectivelyUpdate(long seconds) {
     if (seconds < 0) {
       throw new IllegalArgumentException("seconds should be nonnegative.");
     }
     if (seconds > 0) {
-      game.getGameState().getWorld().rollDate(seconds);
+      gameState.getWorld().rollDate(seconds);
     }
     silentRefresh();
     notifyGameStateModification();
@@ -69,14 +64,14 @@ public final class Engine {
   /**
    * Sets the status of the GameState to unsaved.
    */
-  private static void notifyGameStateModification() {
-    game.getGameState().setSaved(false);
+  void notifyGameStateModification() {
+    gameState.setSaved(false);
   }
 
   /**
    * Silently refreshes the game. Does not produce any visible textual output.
    */
-  private static void silentRefresh() {
+  private void silentRefresh() {
     refreshSpawners();
     refreshItems();
   }
@@ -84,7 +79,7 @@ public final class Engine {
   /**
    * Ends the turn, refreshing the game state and checking if any achievements were unlocked.
    */
-  public static void endTurn() {
+  public void endTurn() {
     silentRefresh();
     refreshAchievements();
   }
@@ -92,23 +87,23 @@ public final class Engine {
   /**
    * Refreshes all relevant Spawners in the world, currently, that is the spawners of the location the Hero is at.
    */
-  private static void refreshSpawners() {
-    game.getGameState().getHero().getLocation().refreshSpawners(game.getGameState());
+  private void refreshSpawners() {
+    gameState.getHero().getLocation().refreshSpawners(gameState);
   }
 
   /**
    * Refreshes all the items in the location the Hero is at.
    */
-  private static void refreshItems() {
-    game.getGameState().getHero().getLocation().refreshItems(game.getGameState());
+  private void refreshItems() {
+    gameState.getHero().getLocation().refreshItems(gameState);
   }
 
   /**
    * Iterates over all achievements, trying to unlock yet to be unlocked achievements.
    */
-  private static void refreshAchievements() {
-    Date worldDate = game.getGameState().getWorld().getWorldDate();
-    game.getGameState().getHero().getAchievementTracker().update(AchievementStoreFactory.getDefaultStore(), worldDate);
+  private void refreshAchievements() {
+    Date worldDate = gameState.getWorld().getWorldDate();
+    gameState.getHero().getAchievementTracker().update(AchievementStoreFactory.getDefaultStore(), worldDate);
   }
 
   /**
@@ -117,19 +112,19 @@ public final class Engine {
    * @param hero the attacker
    * @param foe the defender
    */
-  public static void battle(Hero hero, Creature foe) {
+  public void battle(Hero hero, Creature foe) {
     if (hero == foe) {
       Writer.write(new DungeonString("You cannot attempt suicide."));
       return;
     }
     while (hero.getHealth().isAlive() && foe.getHealth().isAlive()) {
-      hero.hit(foe, game.getGameState());
-      Engine.rollDateAndRefresh(BATTLE_TURN_DURATION);
+      hero.hit(foe, gameState);
+      rollDateAndRefresh(BATTLE_TURN_DURATION);
       // No contract specifies that calling hit on the Hero will not kill it, so check both creatures again.
       // Additionally, rolling the date forward may kill the hero in the future.
       if (hero.getHealth().isAlive() && foe.getHealth().isAlive()) {
-        foe.hit(hero, game.getGameState());
-        Engine.rollDateAndRefresh(BATTLE_TURN_DURATION);
+        foe.hit(hero, gameState);
+        rollDateAndRefresh(BATTLE_TURN_DURATION);
       }
     }
     Creature survivor = hero.getHealth().isAlive() ? hero : foe;
@@ -145,13 +140,13 @@ public final class Engine {
     Writer.write(dungeonString);
     writeDrops(defeated);
     if (hero == survivor) {
-      PartOfDay partOfDay = PartOfDay.getCorrespondingConstant(game.getGameState().getWorld().getWorldDate());
-      game.getGameState().getStatistics().getBattleStatistics().addBattle(foe, defeated.getCauseOfDeath(), partOfDay);
-      game.getGameState().getStatistics().getExplorationStatistics().addKill(hero.getLocation().getPoint());
+      PartOfDay partOfDay = PartOfDay.getCorrespondingConstant(gameState.getWorld().getWorldDate());
+      gameState.getStatistics().getBattleStatistics().addBattle(foe, defeated.getCauseOfDeath(), partOfDay);
+      gameState.getStatistics().getExplorationStatistics().addKill(hero.getLocation().getPoint());
       long heroTakenDamage = hero.getBattleLog().getAndResetTaken();
       long heroInflictedDamage = hero.getBattleLog().getAndResetInflicted();
-      game.getGameState().getStatistics().getHeroStatistics().incrementDamageTaken(heroTakenDamage);
-      game.getGameState().getStatistics().getHeroStatistics().incrementDamageInflicted(heroInflictedDamage);
+      gameState.getStatistics().getHeroStatistics().incrementDamageTaken(heroTakenDamage);
+      gameState.getStatistics().getHeroStatistics().incrementDamageInflicted(heroInflictedDamage);
     }
   }
 
@@ -160,7 +155,7 @@ public final class Engine {
    *
    * @param source a dead Creature
    */
-  private static void writeDrops(Creature source) {
+  private void writeDrops(Creature source) {
     if (!source.getDroppedItemsList().isEmpty()) {
       DungeonString string = new DungeonString();
       string.append(source.getName().getSingular() + " dropped ");

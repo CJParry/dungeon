@@ -15,7 +15,7 @@ import java.util.List;
 public class Sky implements Serializable {
 
   private static final long serialVersionUID = Version.MAJOR;
-  private final Collection<AstronomicalBody> astronomicalBodies = new ArrayList<>();
+  private final Collection<SimpleAstronomicalBody> astronomicalBodies = new ArrayList<>();
 
   /**
    * Constructs an empty sky.
@@ -26,7 +26,7 @@ public class Sky implements Serializable {
   /**
    * Adds an astronomical body to the sky.
    */
-  void addAstronomicalBody(AstronomicalBody astronomicalBody) {
+  void addAstronomicalBody(SimpleAstronomicalBody astronomicalBody) {
     astronomicalBodies.add(astronomicalBody);
   }
 
@@ -35,7 +35,7 @@ public class Sky implements Serializable {
    */
   public String describeYourself(Observer observer) {
     List<String> descriptions = new ArrayList<>();
-    for (AstronomicalBody astronomicalBody : astronomicalBodies) {
+    for (SimpleAstronomicalBody astronomicalBody : astronomicalBodies) {
       if (astronomicalBody.isVisible(observer)) {
         descriptions.add(astronomicalBody.describeYourself());
       }

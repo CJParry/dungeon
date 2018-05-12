@@ -83,9 +83,9 @@ public final class Item extends Entity {
     }
   }
 
-/*
-  */
-/**
+  /*
+   */
+  /**
    * Returns how many seconds have passed since this Item was created.
    *
    * @return a long representing an amount of seconds
